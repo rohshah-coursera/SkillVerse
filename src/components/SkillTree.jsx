@@ -1,92 +1,114 @@
-import React, { useState, useRef, Suspense, useEffect } from 'react'
+import React, { useState, useRef, Suspense } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { OrbitControls, Html } from '@react-three/drei'
 import { motion } from 'framer-motion'
 import { useGame } from '../context/GameContext'
-import { ArrowLeft, Sparkles, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Sparkles } from 'lucide-react'
+import * as THREE from 'three'
 import './SkillTree.css'
 
-// Lazy load Three.js components
-let Canvas, useFrame, OrbitControls, Html, THREE
-
-// AI Domain Skills Structure
+// AI Domain Skills Structure (Upside-down tree: roots at top, branches/leaves at bottom)
 const AI_SKILLS_TREE = {
   root: {
     id: 'ai-foundations',
     name: 'AI Foundations',
-    position: [0, 0, 0],
+    position: [0, 4, 0], // Top (roots)
     prerequisites: [],
     domain: 'AI',
   },
+  trunkHeight: 3, // Height of main trunk
   branches: [
     {
       id: 'machine-learning',
       name: 'Machine Learning',
-      position: [-3, 2, 0],
+      position: [-2.5, 1, 0], // Middle section (main branches)
       prerequisites: ['ai-foundations'],
       domain: 'AI',
       skills: [
-        { id: 'supervised-learning', name: 'Supervised Learning', position: [-4, 3.5, 0], completed: false },
-        { id: 'unsupervised-learning', name: 'Unsupervised Learning', position: [-2, 3.5, 0], completed: false },
-        { id: 'reinforcement-learning', name: 'Reinforcement Learning', position: [-3, 4.5, 0], completed: false },
+        { id: 'supervised-learning', name: 'Supervised Learning', position: [-3.5, -1.5, 0], completed: false },
+        { id: 'unsupervised-learning', name: 'Unsupervised Learning', position: [-1.5, -1.5, 0], completed: false },
+        { id: 'reinforcement-learning', name: 'Reinforcement Learning', position: [-2.5, -2.5, 0], completed: false },
       ],
     },
     {
       id: 'deep-learning',
       name: 'Deep Learning',
-      position: [0, 2, 0],
+      position: [0, 1, 0],
       prerequisites: ['machine-learning'],
       domain: 'AI',
       skills: [
-        { id: 'neural-networks', name: 'Neural Networks', position: [-1, 3.5, 0], completed: false },
-        { id: 'cnn', name: 'CNN', position: [0, 3.5, 0], completed: false },
-        { id: 'rnn', name: 'RNN', position: [1, 3.5, 0], completed: false },
-        { id: 'transformers', name: 'Transformers', position: [0, 4.5, 0], completed: false },
+        { id: 'neural-networks', name: 'Neural Networks', position: [-1, -1.5, 0], completed: false },
+        { id: 'cnn', name: 'CNN', position: [0, -1.5, 0], completed: false },
+        { id: 'rnn', name: 'RNN', position: [1, -1.5, 0], completed: false },
+        { id: 'transformers', name: 'Transformers', position: [0, -2.5, 0], completed: false },
       ],
     },
     {
       id: 'nlp',
       name: 'Natural Language Processing',
-      position: [3, 2, 0],
+      position: [2.5, 1, 0],
       prerequisites: ['deep-learning'],
       domain: 'AI',
       skills: [
-        { id: 'text-processing', name: 'Text Processing', position: [2, 3.5, 0], completed: false },
-        { id: 'sentiment-analysis', name: 'Sentiment Analysis', position: [3, 3.5, 0], completed: false },
-        { id: 'language-models', name: 'Language Models', position: [4, 3.5, 0], completed: false },
-        { id: 'chatbots', name: 'Chatbots', position: [3, 4.5, 0], completed: false },
+        { id: 'text-processing', name: 'Text Processing', position: [1.5, -1.5, 0], completed: false },
+        { id: 'sentiment-analysis', name: 'Sentiment Analysis', position: [2.5, -1.5, 0], completed: false },
+        { id: 'language-models', name: 'Language Models', position: [3.5, -1.5, 0], completed: false },
+        { id: 'chatbots', name: 'Chatbots', position: [2.5, -2.5, 0], completed: false },
       ],
     },
     {
       id: 'computer-vision',
       name: 'Computer Vision',
-      position: [-1.5, 2, 0],
+      position: [-1.2, 1, 0],
       prerequisites: ['deep-learning'],
       domain: 'AI',
       skills: [
-        { id: 'image-classification', name: 'Image Classification', position: [-2, 3.5, 0], completed: false },
-        { id: 'object-detection', name: 'Object Detection', position: [-1, 3.5, 0], completed: false },
-        { id: 'image-segmentation', name: 'Image Segmentation', position: [-1.5, 4.5, 0], completed: false },
+        { id: 'image-classification', name: 'Image Classification', position: [-1.8, -1.5, 0], completed: false },
+        { id: 'object-detection', name: 'Object Detection', position: [-0.6, -1.5, 0], completed: false },
+        { id: 'image-segmentation', name: 'Image Segmentation', position: [-1.2, -2.5, 0], completed: false },
       ],
     },
     {
       id: 'ai-ethics',
       name: 'AI Ethics',
-      position: [1.5, 2, 0],
+      position: [1.2, 1, 0],
       prerequisites: ['ai-foundations'],
       domain: 'AI',
       skills: [
-        { id: 'bias-detection', name: 'Bias Detection', position: [1, 3.5, 0], completed: false },
-        { id: 'fairness', name: 'Fairness', position: [2, 3.5, 0], completed: false },
-        { id: 'privacy', name: 'Privacy', position: [1.5, 4.5, 0], completed: false },
+        { id: 'bias-detection', name: 'Bias Detection', position: [0.6, -1.5, 0], completed: false },
+        { id: 'fairness', name: 'Fairness', position: [1.8, -1.5, 0], completed: false },
+        { id: 'privacy', name: 'Privacy', position: [1.2, -2.5, 0], completed: false },
       ],
     },
   ],
 }
 
-// Branch component (3D cylinder)
+// Tree Trunk component (main vertical trunk)
+function TreeTrunk({ start, end }) {
+  const startVec = new THREE.Vector3(...start)
+  const endVec = new THREE.Vector3(...end)
+  const direction = new THREE.Vector3().subVectors(endVec, startVec)
+  const length = direction.length()
+  const center = new THREE.Vector3().addVectors(startVec, endVec).multiplyScalar(0.5)
+  
+  // Calculate rotation to align with direction
+  const angle = Math.atan2(direction.y, direction.x) - Math.PI / 2
+  
+  return (
+    <mesh position={center} rotation={[0, 0, angle]}>
+      <cylinderGeometry args={[0.15, 0.2, length, 12]} />
+      <meshStandardMaterial 
+        color="#8B4513" // Brown wood color
+        roughness={0.9}
+        metalness={0.1}
+      />
+    </mesh>
+  )
+}
+
+// Branch component (tree branch - brown cylinder)
 function Branch({ start, end, completed }) {
   const meshRef = useRef()
-  
-  if (!THREE) return null
   
   const startVec = new THREE.Vector3(...start)
   const endVec = new THREE.Vector3(...end)
@@ -94,39 +116,43 @@ function Branch({ start, end, completed }) {
   const length = direction.length()
   const center = new THREE.Vector3().addVectors(startVec, endVec).multiplyScalar(0.5)
   
-  useFrame(() => {
-    if (meshRef.current) {
-      meshRef.current.rotation.z = Math.atan2(direction.y, direction.x) - Math.PI / 2
-    }
-  })
+  // Calculate rotation to align with direction
+  const angle = Math.atan2(direction.y, direction.x) - Math.PI / 2
+  
+  // Thickness varies: thicker at start, thinner at end
+  const startRadius = completed ? 0.08 : 0.06
+  const endRadius = completed ? 0.05 : 0.04
 
   return (
-    <mesh ref={meshRef} position={center}>
-      <cylinderGeometry args={[0.05, 0.05, length, 8]} />
+    <mesh ref={meshRef} position={center} rotation={[0, 0, angle]}>
+      <cylinderGeometry args={[startRadius, endRadius, length, 8]} />
       <meshStandardMaterial 
-        color={completed ? '#10b981' : '#6b7280'} 
-        metalness={0.3}
-        roughness={0.7}
+        color={completed ? "#6B8E23" : "#8B4513"} // Olive green if completed, brown if not
+        roughness={0.9}
+        metalness={0.1}
       />
     </mesh>
   )
 }
 
-// Skill Leaf component (3D sphere with text)
+// Skill Leaf component (leaf-shaped geometry)
 function SkillLeaf({ skill, position, completed, unlocked, onComplete }) {
   const meshRef = useRef()
+  const groupRef = useRef()
   const [hovered, setHovered] = useState(false)
 
-  if (!useFrame || !Html) return null
-
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += 0.01
+    if (groupRef.current) {
+      // Gentle swaying motion like a leaf in the wind
+      const sway = Math.sin(state.clock.elapsedTime * 0.5) * 0.1
+      groupRef.current.rotation.z = sway
+      
       if (hovered && unlocked) {
         const baseY = position[1]
-        meshRef.current.position.y = baseY + Math.sin(state.clock.elapsedTime * 2) * 0.1
+        groupRef.current.position.y = baseY + Math.sin(state.clock.elapsedTime * 2) * 0.15
+        groupRef.current.rotation.y += 0.02
       } else {
-        meshRef.current.position.y = position[1]
+        groupRef.current.position.y = position[1]
       }
     }
   })
@@ -137,25 +163,34 @@ function SkillLeaf({ skill, position, completed, unlocked, onComplete }) {
     }
   }
 
+  // Create leaf shape using a flattened sphere
   return (
-    <group position={position}>
+    <group ref={groupRef} position={position}>
       <mesh
         ref={meshRef}
         onClick={handleClick}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
-        scale={hovered && unlocked ? 1.2 : 1}
+        scale={hovered && unlocked ? [1.3, 1.3, 0.8] : [1, 1, 0.6]}
+        rotation={[Math.PI / 4, 0, 0]}
       >
-        <sphereGeometry args={[0.3, 16, 16]} />
+        <sphereGeometry args={[0.25, 12, 8]} />
         <meshStandardMaterial
-          color={completed ? '#10b981' : unlocked ? '#3b82f6' : '#9ca3af'}
-          emissive={completed ? '#10b981' : unlocked ? '#3b82f6' : '#000000'}
-          emissiveIntensity={completed ? 0.5 : unlocked ? 0.2 : 0}
-          metalness={0.8}
-          roughness={0.2}
+          color={completed ? '#228B22' : unlocked ? '#32CD32' : '#8B7355'} // Green if completed/unlocked, brown if locked
+          emissive={completed ? '#228B22' : unlocked ? '#32CD32' : '#000000'}
+          emissiveIntensity={completed ? 0.3 : unlocked ? 0.15 : 0}
+          roughness={0.7}
+          metalness={0.1}
+          transparent={!unlocked}
+          opacity={unlocked ? 1 : 0.5}
         />
       </mesh>
-      <Html distanceFactor={10} position={[0, 0.6, 0]}>
+      {/* Add a small stem */}
+      <mesh position={[0, -0.15, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.02, 0.02, 0.1, 6]} />
+        <meshStandardMaterial color="#8B4513" roughness={0.9} />
+      </mesh>
+      <Html distanceFactor={10} position={[0, -0.5, 0]}>
         <div className={`skill-label ${completed ? 'completed' : unlocked ? 'unlocked' : 'locked'}`}>
           {skill.name}
           {completed && <span className="check-mark">✓</span>}
@@ -165,16 +200,14 @@ function SkillLeaf({ skill, position, completed, unlocked, onComplete }) {
   )
 }
 
-// Branch Node component
+// Branch Node component (thicker branch junction)
 function BranchNode({ branch, position, completed, unlocked, onComplete, skills }) {
   const meshRef = useRef()
   const [hovered, setHovered] = useState(false)
 
-  if (!useFrame || !Html) return null
-
   useFrame((state) => {
     if (meshRef.current && hovered) {
-      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime) * 0.2
+      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime) * 0.1
     }
   })
 
@@ -184,16 +217,16 @@ function BranchNode({ branch, position, completed, unlocked, onComplete, skills 
         ref={meshRef}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
-        scale={hovered ? 1.1 : 1}
+        scale={hovered ? 1.15 : 1}
       >
-        <cylinderGeometry args={[0.2, 0.2, 0.4, 8]} />
+        <cylinderGeometry args={[0.12, 0.12, 0.3, 10]} />
         <meshStandardMaterial
-          color={completed ? '#10b981' : unlocked ? '#3b82f6' : '#6b7280'}
-          metalness={0.5}
-          roughness={0.5}
+          color={completed ? "#6B8E23" : unlocked ? "#8B4513" : "#654321"} // Olive green if completed, brown if unlocked, darker brown if locked
+          roughness={0.9}
+          metalness={0.1}
         />
       </mesh>
-      <Html distanceFactor={10} position={[0, 0.8, 0]}>
+      <Html distanceFactor={10} position={[0, 0.5, 0]}>
         <div className={`branch-label ${completed ? 'completed' : unlocked ? 'unlocked' : 'locked'}`}>
           {branch.name}
         </div>
@@ -204,7 +237,7 @@ function BranchNode({ branch, position, completed, unlocked, onComplete, skills 
           skill={skill}
           position={skill.position}
           completed={skill.completed}
-          unlocked={unlocked && branch.completed}
+          unlocked={unlocked}
           onComplete={onComplete}
         />
       ))}
@@ -212,30 +245,51 @@ function BranchNode({ branch, position, completed, unlocked, onComplete, skills 
   )
 }
 
-// Root Node component
+// Root Node component (tree roots at the top)
 function RootNode({ root, position, completed }) {
   const meshRef = useRef()
 
-  if (!useFrame || !Html) return null
-
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.2
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.1
     }
   })
 
+  // Create multiple root strands
+  const rootPositions = [
+    [0, 0, 0],
+    [-0.3, 0.2, 0],
+    [0.3, 0.2, 0],
+    [-0.15, 0.3, 0],
+    [0.15, 0.3, 0],
+  ]
+
   return (
     <group position={position}>
-      <mesh ref={meshRef}>
-        <octahedronGeometry args={[0.4, 0]} />
+      {/* Main root center */}
+      <mesh ref={meshRef} position={[0, 0, 0]}>
+        <sphereGeometry args={[0.25, 16, 16]} />
         <meshStandardMaterial
-          color={completed ? '#10b981' : '#0056D2'}
-          emissive={completed ? '#10b981' : '#0056D2'}
-          emissiveIntensity={0.5}
-          metalness={0.9}
-          roughness={0.1}
+          color={completed ? "#654321" : "#4A4A4A"}
+          emissive={completed ? "#654321" : "#000000"}
+          emissiveIntensity={completed ? 0.2 : 0}
+          roughness={0.9}
+          metalness={0.1}
         />
       </mesh>
+      
+      {/* Root strands */}
+      {rootPositions.map((pos, idx) => (
+        <mesh key={idx} position={pos} rotation={[0, 0, Math.PI / 4 + idx * 0.3]}>
+          <cylinderGeometry args={[0.08, 0.05, 0.4, 6]} />
+          <meshStandardMaterial
+            color={completed ? "#654321" : "#4A4A4A"}
+            roughness={0.9}
+            metalness={0.1}
+          />
+        </mesh>
+      ))}
+      
       <Html distanceFactor={10} position={[0, 0.8, 0]}>
         <div className={`root-label ${completed ? 'completed' : ''}`}>
           {root.name}
@@ -247,16 +301,30 @@ function RootNode({ root, position, completed }) {
 
 // Main 3D Scene
 function SkillTreeScene({ skillsTree, completedSkills, unlockedSkills, onCompleteSkill }) {
-  const { branches, root } = skillsTree
+  const { branches, root, trunkHeight } = skillsTree
+  
+  // Calculate trunk end position (from root down)
+  const trunkEnd = [root.position[0], root.position[1] - trunkHeight, root.position[2]]
 
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1} />
-      <pointLight position={[-10, -10, -5]} intensity={0.5} />
+      {/* Lighting - natural tree lighting */}
+      <ambientLight intensity={0.6} />
+      <directionalLight position={[5, 10, 5]} intensity={1.2} color="#FFE5B4" />
+      <directionalLight position={[-5, 8, -5]} intensity={0.5} color="#E6F3FF" />
+      <pointLight position={[0, 5, 5]} intensity={0.3} color="#FFFACD" />
 
-      {/* Root Node */}
+      {/* Ground plane (optional - for visual reference) */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -3, 0]}>
+        <planeGeometry args={[20, 20]} />
+        <meshStandardMaterial color="#2D5016" roughness={0.9} />
+      </mesh>
+
+      {/* Root Node (at the top) */}
       <RootNode root={root} position={root.position} completed={completedSkills.has(root.id)} />
+
+      {/* Main Trunk (from root down to branch level) */}
+      <TreeTrunk start={root.position} end={trunkEnd} />
 
       {/* Branches and Skills */}
       {branches.map((branch) => {
@@ -265,9 +333,9 @@ function SkillTreeScene({ skillsTree, completedSkills, unlockedSkills, onComplet
         
         return (
           <group key={branch.id}>
-            {/* Branch connection from root */}
+            {/* Branch connection from trunk to branch node */}
             <Branch
-              start={root.position}
+              start={trunkEnd}
               end={branch.position}
               completed={branchCompleted}
             />
@@ -285,7 +353,7 @@ function SkillTreeScene({ skillsTree, completedSkills, unlockedSkills, onComplet
               }))}
             />
 
-            {/* Skill connections from branch */}
+            {/* Skill connections from branch to leaves */}
             {branch.skills.map((skill) => (
               <Branch
                 key={`${branch.id}-${skill.id}`}
@@ -302,8 +370,9 @@ function SkillTreeScene({ skillsTree, completedSkills, unlockedSkills, onComplet
         enablePan={true}
         enableZoom={true}
         enableRotate={true}
-        minDistance={5}
-        maxDistance={20}
+        minDistance={8}
+        maxDistance={25}
+        target={[0, 0, 0]} // Center on tree
       />
     </>
   )
@@ -313,63 +382,6 @@ const SkillTree = ({ onBack }) => {
   const { skills, level, addNotification } = useGame()
   const [completedSkills, setCompletedSkills] = useState(new Set())
   const [unlockedSkills, setUnlockedSkills] = useState(new Set(['ai-foundations']))
-  const [threeJsLoaded, setThreeJsLoaded] = useState(false)
-
-  // Dynamically load Three.js packages
-  useEffect(() => {
-    const loadThreeJs = async () => {
-      try {
-        const [fiber, drei, three] = await Promise.all([
-          import('@react-three/fiber'),
-          import('@react-three/drei'),
-          import('three')
-        ])
-        Canvas = fiber.Canvas
-        useFrame = fiber.useFrame
-        OrbitControls = drei.OrbitControls
-        Html = drei.Html
-        THREE = three
-        setThreeJsLoaded(true)
-      } catch (e) {
-        console.warn('Three.js packages not installed. Please run: npm install three @react-three/fiber @react-three/drei')
-        setThreeJsLoaded(false)
-      }
-    }
-    loadThreeJs()
-  }, [])
-
-  // Check if Three.js is available
-  if (!threeJsLoaded || !Canvas || !THREE) {
-    return (
-      <motion.div
-        className="skill-tree-page"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <div className="skill-tree-header">
-          <motion.button
-            className="back-button"
-            onClick={onBack}
-            whileHover={{ x: -4 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <ArrowLeft size={20} />
-            <span>Back to Dashboard</span>
-          </motion.button>
-        </div>
-        <div className="skill-tree-error">
-          <AlertCircle size={48} />
-          <h2>Three.js Packages Not Installed</h2>
-          <p>To use the 3D Skill Tree, please install the required packages:</p>
-          <div className="install-instructions">
-            <code>npm install three @react-three/fiber @react-three/drei</code>
-          </div>
-          <p className="install-note">After installation, restart your dev server.</p>
-        </div>
-      </motion.div>
-    )
-  }
 
   // Initialize completed skills from game context
   React.useEffect(() => {
@@ -468,7 +480,7 @@ const SkillTree = ({ onBack }) => {
 
       <div className="skill-tree-container">
         <div className="skill-tree-canvas">
-          <Canvas camera={{ position: [0, 5, 10], fov: 50 }}>
+          <Canvas camera={{ position: [0, 0, 12], fov: 60 }}>
             <Suspense fallback={null}>
               <SkillTreeScene
                 skillsTree={AI_SKILLS_TREE}
