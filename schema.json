@@ -1,0 +1,8 @@
+We have 5 career domains: "Data Science", "IT", "Cybersecurity", "Healthcare", "Sales"
+Suggest around 100 skills for each career domain, rated by relevance and popularity
+Give the output in the following json schema format
+{
+  "career domains":  {
+            "Data Analysis": {<skill-1-name>: {"popularity": <on 1-10 scale>, "relevance": <on 1-10 scale},
+}
+}

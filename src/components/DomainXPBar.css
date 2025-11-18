@@ -1,0 +1,90 @@
+.domain-xp-bar-container {
+  position: fixed;
+  bottom: clamp(1rem, 3vw, 2rem);
+  right: clamp(1rem, 3vw, 2rem);
+  background: white;
+  border-radius: 12px;
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.5rem);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: 2px solid #e0e0e0;
+  min-width: min(300px, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+  z-index: 1500;
+  animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.domain-xp-bar-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.domain-xp-icon {
+  font-size: 1.5rem;
+}
+
+.domain-xp-name {
+  flex: 1;
+  font-weight: 600;
+  color: #2d2d2d;
+  font-size: 1rem;
+}
+
+.domain-xp-level {
+  background: #f5f5f5;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+}
+
+.domain-xp-amount {
+  font-weight: 600;
+  color: #0056d2;
+  font-size: 0.9rem;
+}
+
+.domain-xp-bar-wrapper {
+  width: 100%;
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.domain-xp-bar {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.5s ease;
+  background: linear-gradient(90deg, currentColor 0%, currentColor 100%);
+}
+
+.domain-xp-bar-text {
+  font-size: 0.8rem;
+  color: #666;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .domain-xp-bar-container {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+    min-width: auto;
+  }
+}
+

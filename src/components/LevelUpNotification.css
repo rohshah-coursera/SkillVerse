@@ -1,0 +1,135 @@
+.level-up-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  z-index: 3000;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.level-up-notification.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+.level-up-content {
+  background: white;
+  border: 3px solid #0056d2;
+  border-radius: 16px;
+  padding: 2rem 3rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  animation: levelUpPulse 0.6s ease;
+}
+
+@keyframes levelUpPulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.level-up-content::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0, 86, 210, 0.1) 0%, transparent 70%);
+  animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.level-up-icon {
+  font-size: 4rem;
+  animation: bounce 1s ease infinite;
+  z-index: 1;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.level-up-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1;
+}
+
+.level-up-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0056d2;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: glow 1.5s ease infinite;
+}
+
+@keyframes glow {
+  0%, 100% { text-shadow: 0 0 10px rgba(0, 86, 210, 0.5); }
+  50% { text-shadow: 0 0 20px rgba(0, 86, 210, 0.8); }
+}
+
+.level-up-domain {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d2d2d;
+}
+
+.level-up-level {
+  font-size: 1rem;
+  color: #666;
+}
+
+.level-up-sparkles {
+  font-size: 2rem;
+  animation: sparkle 1s ease infinite;
+  z-index: 1;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+@media (max-width: 768px) {
+  .level-up-content {
+    padding: 1.5rem 2rem;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .level-up-icon {
+    font-size: 3rem;
+  }
+
+  .level-up-title {
+    font-size: 1.5rem;
+  }
+
+  .level-up-domain {
+    font-size: 1.1rem;
+  }
+}
+
