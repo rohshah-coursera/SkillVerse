@@ -1,0 +1,317 @@
+.skill-tree-page {
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-tree-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.skill-tree-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-4px);
+}
+
+.skill-tree-title {
+  flex: 1;
+  text-align: center;
+}
+
+.skill-tree-title h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.skill-tree-title p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+.skill-tree-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.skill-tree-container {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  height: calc(100vh - 250px);
+}
+
+.skill-tree-canvas {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.skill-tree-legend {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  height: fit-content;
+}
+
+.skill-tree-legend h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 1rem 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.legend-color {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-color.completed {
+  background: #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.legend-color.unlocked {
+  background: #3b82f6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.legend-color.locked {
+  background: #9ca3af;
+}
+
+.legend-instructions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.legend-instructions p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+/* Skill Labels */
+.skill-label,
+.branch-label,
+.root-label {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1f2937;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid transparent;
+  pointer-events: none;
+  text-align: center;
+}
+
+.skill-label.completed,
+.branch-label.completed,
+.root-label.completed {
+  background: rgba(16, 185, 129, 0.95);
+  color: white;
+  border-color: #10b981;
+}
+
+.skill-label.unlocked,
+.branch-label.unlocked {
+  background: rgba(59, 130, 246, 0.95);
+  color: white;
+  border-color: #3b82f6;
+}
+
+.skill-label.locked,
+.branch-label.locked {
+  background: rgba(156, 163, 175, 0.95);
+  color: white;
+  border-color: #9ca3af;
+}
+
+.check-mark {
+  margin-left: 0.5rem;
+  font-size: 1rem;
+}
+
+.branch-label,
+.root-label {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+}
+
+.root-label {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+@media (max-width: 1024px) {
+  .skill-tree-container {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .skill-tree-canvas {
+    height: 600px;
+  }
+
+  .skill-tree-legend {
+    order: -1;
+  }
+}
+
+.skill-tree-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.skill-tree-error svg {
+  color: #fbbf24;
+  margin-bottom: 1.5rem;
+}
+
+.skill-tree-error h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 1rem 0;
+}
+
+.skill-tree-error p {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0.5rem 0;
+}
+
+.install-instructions {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.install-instructions code {
+  font-size: 1rem;
+  color: #fbbf24;
+  font-weight: 600;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+.install-note {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .skill-tree-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .skill-tree-title {
+    text-align: left;
+  }
+
+  .skill-tree-title h1 {
+    font-size: 2rem;
+  }
+
+  .skill-tree-canvas {
+    height: 500px;
+  }
+
+  .skill-tree-error {
+    padding: 2rem 1.5rem;
+  }
+
+  .skill-tree-error h2 {
+    font-size: 1.5rem;
+  }
+}
+

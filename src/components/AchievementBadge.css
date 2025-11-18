@@ -1,0 +1,59 @@
+.achievement-badge {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 2px solid #E9ECEF;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.achievement-badge.unlocked {
+  border-color: #0056D2;
+  background: linear-gradient(135deg, rgba(0, 86, 210, 0.05) 0%, rgba(0, 52, 126, 0.05) 100%);
+}
+
+.achievement-badge.locked {
+  opacity: 0.6;
+  filter: grayscale(100%);
+}
+
+.achievement-icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.locked-icon {
+  color: #ADB5BD;
+}
+
+.achievement-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.achievement-badge.unlocked .achievement-title {
+  color: #0056D2;
+}
+
+.achievement-badge.locked .achievement-title {
+  color: #6C757D;
+}
+
+.achievement-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+

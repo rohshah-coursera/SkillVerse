@@ -1,0 +1,104 @@
+.game-button {
+  position: relative;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform-style: preserve-3d;
+}
+
+.game-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.game-button:hover::before {
+  opacity: 1;
+}
+
+.game-button-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+.game-button:hover .game-button-shine {
+  left: 100%;
+}
+
+.game-button-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Variants */
+.game-button-primary {
+  background: linear-gradient(135deg, #0056D2 0%, #00347E 100%);
+  color: white;
+}
+
+.game-button-primary:hover {
+  background: linear-gradient(135deg, #0066F0 0%, #0044A0 100%);
+  box-shadow: 0 6px 20px rgba(0, 86, 210, 0.4);
+}
+
+.game-button-secondary {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  color: white;
+}
+
+.game-button-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.game-button-success:hover {
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+/* Sizes */
+.game-button-small {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.game-button-medium {
+  padding: 12px 24px;
+  font-size: 16px;
+}
+
+.game-button-large {
+  padding: 16px 32px;
+  font-size: 18px;
+}
+
+.game-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.game-button:disabled:hover {
+  transform: none;
+}
+

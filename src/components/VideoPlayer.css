@@ -1,0 +1,364 @@
+.course-page-container {
+  min-height: calc(100vh - 80px);
+  background: #F8F9FA;
+  margin-top: 80px;
+}
+
+.course-page-header {
+  background: white;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #E9ECEF;
+  position: sticky;
+  top: 80px;
+  z-index: 10;
+}
+
+.course-page-layout {
+  display: flex;
+  min-height: calc(100vh - 160px);
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: #495057;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: #F8F9FA;
+  color: #0056D2;
+}
+
+.course-header-info h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 0.25rem;
+}
+
+.course-header-info p {
+  font-size: 0.875rem;
+  color: #6C757D;
+}
+
+/* Responsive layout */
+@media (max-width: 1200px) {
+  .course-right-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .course-sidebar {
+    position: fixed;
+    left: -280px;
+    z-index: 1000;
+    transition: left 0.3s;
+  }
+
+  .course-sidebar.open {
+    left: 0;
+  }
+
+  .course-content {
+    padding: 24px 20px;
+  }
+}
+
+.video-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.video-placeholder {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  background: #000;
+}
+
+.video-placeholder img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.video-play-button {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #0056D2;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.video-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+  padding: 1rem;
+}
+
+.video-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+}
+
+.video-progress-fill {
+  height: 100%;
+  background: #0056D2;
+  border-radius: 2px;
+}
+
+.video-controls-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.video-controls-left,
+.video-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.video-controls-left button,
+.video-controls-right button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-controls-left button:hover,
+.video-controls-right button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.video-time {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.video-info {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.video-info h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 0.75rem;
+}
+
+.video-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #6C757D;
+  margin-bottom: 1rem;
+}
+
+.video-description {
+  font-size: 0.95rem;
+  color: #495057;
+  line-height: 1.6;
+}
+
+.video-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.video-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.video-sidebar-header h4 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.video-sidebar-header span {
+  font-size: 0.875rem;
+  color: #6C757D;
+}
+
+.video-list {
+  background: white;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.video-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 0.5rem;
+}
+
+.video-item:hover {
+  background: #F8F9FA;
+}
+
+.video-item.current {
+  background: linear-gradient(90deg, rgba(0, 86, 210, 0.1) 0%, transparent 100%);
+  border-left: 4px solid #0056D2;
+}
+
+.video-item.completed {
+  opacity: 0.8;
+}
+
+.video-item-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #E9ECEF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #495057;
+  flex-shrink: 0;
+}
+
+.video-item.current .video-item-number {
+  background: #0056D2;
+  color: white;
+}
+
+.video-item-content {
+  flex: 1;
+}
+
+.video-item-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 0.25rem;
+}
+
+.video-item.current .video-item-title {
+  color: #0056D2;
+}
+
+.video-item-duration {
+  font-size: 0.75rem;
+  color: #6C757D;
+}
+
+.video-item-check {
+  color: #28A745;
+  flex-shrink: 0;
+}
+
+.xp-reward-card {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #212529;
+}
+
+.xp-reward-icon {
+  font-size: 2rem;
+}
+
+.xp-reward-content {
+  flex: 1;
+}
+
+.xp-reward-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.xp-reward-amount {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+@media (max-width: 1024px) {
+  .video-player-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .video-sidebar {
+    order: -1;
+  }
+}
+
