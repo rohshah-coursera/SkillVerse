@@ -17,9 +17,9 @@ const Header = () => {
     >
       <div className="header-content">
         <div className="header-left">
-          <div className="logo">
-            <span className="logo-text">LearnQuest</span>
-            <span className="logo-subtitle">Gaming Dashboard</span>
+          <div className="logo">   
+            <span className="logo-text">Skill Verse</span>
+            <span className="logo-subtitle">Coursera Gaming Dashboard</span>
           </div>
         </div>
 

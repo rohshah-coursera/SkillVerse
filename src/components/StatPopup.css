@@ -1,0 +1,105 @@
+.stat-popup {
+  background: #FFFFFF;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.stat-popup-content {
+  padding: 1.5rem;
+}
+
+.stat-display {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  border: 1px solid #E9ECEF;
+}
+
+.stat-large-value {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #4285F4;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.stat-large-label {
+  font-size: 1.125rem;
+  color: #6C757D;
+  font-weight: 600;
+}
+
+.tips-section {
+  margin-bottom: 2rem;
+}
+
+.tips-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #212529;
+  margin: 0 0 1rem 0;
+}
+
+.tips-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tips-list li {
+  padding: 0.75rem 1rem;
+  background: #F8F9FA;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  color: #495057;
+  font-size: 0.95rem;
+  border-left: 3px solid #4285F4;
+}
+
+.share-section {
+  text-align: center;
+  padding: 1.5rem;
+  background: #F8F9FA;
+  border-radius: 12px;
+  border: 1px solid #E9ECEF;
+}
+
+.share-text {
+  font-size: 0.95rem;
+  color: #495057;
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+}
+
+.share-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #0077b5 0%, #005885 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 119, 181, 0.3);
+}
+
+.share-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 119, 181, 0.4);
+}
+
+.share-button svg {
+  color: #FFFFFF;
+}
+

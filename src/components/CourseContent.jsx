@@ -120,14 +120,16 @@ const CourseContent = ({ course, selectedModule, onContentComplete }) => {
     // Play sound
     soundManager.playNotification('TASK_COMPLETE')
 
-    // Complete task in context (saves to localStorage)
-    completeTask(course.id, selectedModule, task.id)
-
-    // If it's a video task, also trigger video completion
+    // If it's a video task, trigger video completion first (which handles XP and notifications)
+    // Then complete the task (which handles module/course completion)
     if (task.type === 'video') {
       completeVideo(course.id, task.id, course.totalVideos || 28)
       soundManager.playNotification('VIDEO_COMPLETED')
     }
+
+    // Complete task in context (saves to localStorage)
+    // This handles module/course completion logic
+    completeTask(course.id, selectedModule, task.id)
 
     onContentComplete?.(task)
   }

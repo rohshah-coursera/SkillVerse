@@ -1,22 +1,46 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { Play, Clock, Award, Zap, Flame } from 'lucide-react'
+import { Play } from 'lucide-react'
 import { useGame } from '../context/GameContext'
 import { soundManager } from '../libs/soundManager'
+import { badges as courseBadgeDefinitions } from '../../data/courses'
 import './CourseCard.css'
 
 const CourseCard = ({ course, onClick }) => {
-  const { badges, courses: gameCourses } = useGame()
-  const gameCourse = gameCourses.find(c => c.id === course.id)
+  const { badges, courseModules } = useGame()
   
-  // Get course-specific badges
-  const courseBadges = badges.filter(badge => {
-    if (badge.id === 'COURSE_25' || badge.id === 'COURSE_50' || badge.id === 'COURSE_75' || badge.id === 'COURSE_MASTER') {
-      // These badges are course-specific, check if they match this course
-      return true // For now, show all badges. Could be enhanced to filter by course
+  // Get real-time progress from courseModules (localStorage) based on actual course completion
+  const courseData = useMemo(() => {
+    const moduleData = courseModules[course.id]
+    
+    if (moduleData && moduleData.modules) {
+      // Calculate progress from completed modules (actual course completion)
+      const completedModules = moduleData.modules.filter(m => m.completed).length || 0
+      const totalModules = moduleData.modules.length || 0
+      const progress = totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0
+      
+      return {
+        progress,
+      }
     }
-    return true
-  }).slice(0, 2) // Show max 2 badges per course
+    
+    // Fallback to course prop data if no module data exists
+    return {
+      progress: course.progress || 0,
+    }
+  }, [courseModules, course])
+  
+  // Get course-specific badges from courses.js and match with earned badges
+  const courseBadges = badges
+    .filter(badge => {
+      // Check if badge is for this course (from courses.js badge definitions)
+      if (courseBadgeDefinitions[course.id]) {
+        return badge.id.startsWith(course.id) || badge.courseId === course.id
+      }
+      // For generic badges, show course progress badges
+      return badge.id === 'COURSE_25' || badge.id === 'COURSE_50' || badge.id === 'COURSE_75' || badge.id === 'COURSE_MASTER' || badge.id === 'COURSE_CHAMPION'
+    })
+    .slice(0, 2) // Show max 2 badges per course
   return (
     <motion.div
       className="course-card"
@@ -50,35 +74,13 @@ const CourseCard = ({ course, onClick }) => {
           <div className="progress-bar-container">
             <div className="progress-bar">
               <motion.div
-                className="progress-fill"
+                className={`progress-fill ${courseData.progress === 100 ? 'completed' : ''}`}
                 initial={{ width: 0 }}
-                animate={{ width: `${course.progress}%` }}
-                transition={{ duration: 1, delay: 0.2 }}
+                animate={{ width: `${courseData.progress}%` }}
+                transition={{ duration: 0.5 }}
+                key={courseData.progress}
               />
             </div>
-            <span className="progress-text">{course.progress}% Complete</span>
-          </div>
-        </div>
-
-        <div className="course-stats">
-          <div className="stat-item">
-            <Clock size={16} />
-            <span>{course.videosCompleted}/{course.totalVideos} Videos</span>
-          </div>
-          <div className="stat-item">
-            <Clock size={16} />
-            <span>{course.duration}</span>
-          </div>
-        </div>
-
-        <div className="course-gamification">
-          <div className="gamification-item">
-            <Zap size={16} className="text-yellow-500" />
-            <span>{course.xp} XP</span>
-          </div>
-          <div className="gamification-item">
-            <Flame size={16} className="text-orange-500" />
-            <span>{course.streak} Day Streak</span>
           </div>
         </div>
 

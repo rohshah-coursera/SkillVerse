@@ -53,13 +53,13 @@
 
 /* Variants */
 .game-button-primary {
-  background: linear-gradient(135deg, #0056D2 0%, #00347E 100%);
+  background: linear-gradient(135deg, #4285F4 0%, #2C5AA0 100%);
   color: white;
 }
 
 .game-button-primary:hover {
-  background: linear-gradient(135deg, #0066F0 0%, #0044A0 100%);
-  box-shadow: 0 6px 20px rgba(0, 86, 210, 0.4);
+  background: linear-gradient(135deg, #5A95F5 0%, #3D6BB3 100%);
+  box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
 }
 
 .game-button-secondary {

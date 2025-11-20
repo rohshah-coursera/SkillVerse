@@ -38,7 +38,7 @@
 
 .menu-button:hover {
   background: #F8F9FA;
-  color: #0056D2;
+  color: #4285F4;
 }
 
 .logo {
@@ -49,7 +49,7 @@
 .logo-text {
   font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #0056D2 0%, #00347E 100%);
+  background: linear-gradient(135deg, #4285F4 0%, #2C5AA0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -92,9 +92,9 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #0056D2;
+  border-color: #4285F4;
   background: white;
-  box-shadow: 0 0 0 3px rgba(0, 86, 210, 0.1);
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
 }
 
 .header-right {
@@ -116,7 +116,7 @@
 }
 
 .stats-badge svg {
-  color: #0056D2;
+  color: #4285F4;
 }
 
 .icon-button {
@@ -135,7 +135,7 @@
 
 .icon-button:hover {
   background: #F8F9FA;
-  color: #0056D2;
+  color: #4285F4;
 }
 
 .notification-dot {
@@ -150,21 +150,25 @@
 }
 
 .avatar-button {
-  background: linear-gradient(135deg, #0056D2 0%, #00347E 100%);
+  background: linear-gradient(135deg, #4285F4 0%, #2C5AA0 100%);
   border: none;
   cursor: pointer;
   padding: 0.75rem;
   border-radius: 12px;
-  color: white;
+  color: #FFFFFF;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.avatar-button svg {
+  color: #FFFFFF;
+}
+
 .avatar-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 86, 210, 0.3);
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
 }
 
 @media (max-width: 1024px) {

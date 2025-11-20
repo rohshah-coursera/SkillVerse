@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { Zap, Trophy, Flame, Award, Target } from 'lucide-react'
 import './GamifiedStats.css'
 
-const GamifiedStats = ({ totalXP, level, streak, badgesCount, levelProgress, weeklyGoal, currentWeek }) => {
+const GamifiedStats = ({ totalXP, level, streak, badgesCount, levelProgress, weeklyGoal, currentWeek, onStatClick }) => {
   return (
     <motion.div
       className="gamified-stats"
@@ -14,11 +14,12 @@ const GamifiedStats = ({ totalXP, level, streak, badgesCount, levelProgress, wee
       {/* Top Row: XP, Level, Streak, Badges */}
       <div className="stats-row">
         <motion.div
-          className="stat-item xp-stat"
+          className="stat-item xp-stat clickable-stat"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
           whileHover={{ scale: 1.05, y: -4 }}
+          onClick={() => onStatClick && onStatClick('xp')}
         >
           <div className="stat-icon-wrapper xp-icon">
             <Zap size={24} />
@@ -31,11 +32,12 @@ const GamifiedStats = ({ totalXP, level, streak, badgesCount, levelProgress, wee
         </motion.div>
 
         <motion.div
-          className="stat-item level-stat"
+          className="stat-item level-stat clickable-stat"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
           whileHover={{ scale: 1.05, y: -4 }}
+          onClick={() => onStatClick && onStatClick('level')}
         >
           <div className="stat-icon-wrapper level-icon">
             <Trophy size={24} />
@@ -48,11 +50,12 @@ const GamifiedStats = ({ totalXP, level, streak, badgesCount, levelProgress, wee
         </motion.div>
 
         <motion.div
-          className="stat-item streak-stat"
+          className="stat-item streak-stat clickable-stat"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 }}
           whileHover={{ scale: 1.05, y: -4 }}
+          onClick={() => onStatClick && onStatClick('streak')}
         >
           <div className="stat-icon-wrapper streak-icon">
             <Flame size={24} />
@@ -65,11 +68,12 @@ const GamifiedStats = ({ totalXP, level, streak, badgesCount, levelProgress, wee
         </motion.div>
 
         <motion.div
-          className="stat-item badges-stat"
+          className="stat-item badges-stat clickable-stat"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4 }}
           whileHover={{ scale: 1.05, y: -4 }}
+          onClick={() => onStatClick && onStatClick('badges')}
         >
           <div className="stat-icon-wrapper badges-icon">
             <Award size={24} />
@@ -91,7 +95,9 @@ const GamifiedStats = ({ totalXP, level, streak, badgesCount, levelProgress, wee
           transition={{ delay: 0.5 }}
         >
           <div className="progress-header">
-            <Trophy size={20} className="progress-icon" />
+            <div className="progress-icon-wrapper">
+              <Trophy size={20} className="progress-icon" />
+            </div>
             <div className="progress-title">
               <span className="progress-label">Level {level}</span>
               <span className="progress-subtitle">Progress to Level {level + 1}</span>
@@ -115,7 +121,9 @@ const GamifiedStats = ({ totalXP, level, streak, badgesCount, levelProgress, wee
           transition={{ delay: 0.6 }}
         >
           <div className="progress-header">
-            <Target size={20} className="progress-icon" />
+            <div className="progress-icon-wrapper">
+              <Target size={20} className="progress-icon" />
+            </div>
             <div className="progress-title">
               <span className="progress-label">Weekly Goal</span>
               <span className="progress-subtitle">{currentWeek} / {weeklyGoal} hours</span>

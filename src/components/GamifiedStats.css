@@ -20,8 +20,16 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
   border: 2px solid transparent;
   overflow: hidden;
-  cursor: pointer;
   transition: all 0.3s;
+}
+
+.stat-item.clickable-stat {
+  cursor: pointer;
+}
+
+.stat-item.clickable-stat:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .stat-item::before {
@@ -35,10 +43,6 @@
   animation: shimmer 2s infinite;
 }
 
-.stat-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.1);
-}
 
 .stat-glow {
   position: absolute;
@@ -123,6 +127,12 @@
   z-index: 1;
 }
 
+.stat-icon-wrapper svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  fill: none;
+}
+
 .stat-info {
   flex: 1;
   min-width: 0;
@@ -185,9 +195,28 @@
   margin-bottom: 1rem;
 }
 
-.progress-icon {
-  color: #6b7280;
+.progress-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #4285F4 0%, #2C5AA0 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+}
+
+.progress-icon {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  fill: none;
+}
+
+.progress-icon-wrapper svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  fill: none;
 }
 
 .progress-title {
@@ -211,7 +240,7 @@
 .progress-percentage {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #0056D2;
+  color: #4285F4;
   flex-shrink: 0;
 }
 

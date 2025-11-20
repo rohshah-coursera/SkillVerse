@@ -1,0 +1,133 @@
+.domain-branch {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.domain-branch:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.domain-header {
+  padding: 1.5rem 2rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-left: 4px solid var(--domain-color, #0056d2);
+  background: linear-gradient(to right, 
+    rgba(0, 86, 210, 0.05) 0%, 
+    transparent 100%);
+}
+
+.domain-header:hover {
+  background: linear-gradient(to right, 
+    rgba(0, 86, 210, 0.08) 0%, 
+    transparent 100%);
+}
+
+.domain-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.domain-title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.domain-icon {
+  font-size: 0.9rem;
+  color: var(--domain-color, #0056d2);
+  transition: transform 0.2s ease;
+  min-width: 20px;
+}
+
+.domain-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d2d2d;
+  margin: 0;
+}
+
+.domain-stats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.domain-progress {
+  font-size: 0.95rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.progress-bar-container {
+  width: 150px;
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  background: linear-gradient(90deg, 
+    var(--domain-color, #0056d2) 0%, 
+    var(--domain-accent, #0056d2) 100%);
+}
+
+.domain-skills {
+  padding: 1.5rem 2rem;
+  background-color: #fafafa;
+  border-top: 1px solid #e0e0e0;
+}
+
+.skills-stem {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .domain-header {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .domain-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .domain-stats {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .progress-bar-container {
+    width: 100%;
+  }
+
+  .domain-skills {
+    padding: 1rem 1.5rem;
+  }
+
+  .skills-stem {
+    grid-template-columns: 1fr;
+  }
+
+  .domain-title {
+    font-size: 1.25rem;
+  }
+}

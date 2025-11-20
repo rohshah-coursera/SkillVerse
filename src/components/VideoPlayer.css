@@ -1,6 +1,6 @@
 .course-page-container {
   min-height: calc(100vh - 80px);
-  background: #F8F9FA;
+  background: #FFFFFF;
   margin-top: 80px;
 }
 
@@ -35,7 +35,7 @@
 
 .back-button:hover {
   background: #F8F9FA;
-  color: #0056D2;
+  color: #4285F4;
 }
 
 .course-header-info h2 {
@@ -127,7 +127,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #0056D2;
+  color: #4285F4;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
@@ -151,7 +151,7 @@
 
 .video-progress-fill {
   height: 100%;
-  background: #0056D2;
+  background: #4285F4;
   border-radius: 2px;
 }
 
@@ -271,8 +271,8 @@
 }
 
 .video-item.current {
-  background: linear-gradient(90deg, rgba(0, 86, 210, 0.1) 0%, transparent 100%);
-  border-left: 4px solid #0056D2;
+  background: linear-gradient(90deg, rgba(66, 133, 244, 0.1) 0%, transparent 100%);
+  border-left: 4px solid #4285F4;
 }
 
 .video-item.completed {
@@ -294,7 +294,7 @@
 }
 
 .video-item.current .video-item-number {
-  background: #0056D2;
+  background: #4285F4;
   color: white;
 }
 
@@ -310,7 +310,7 @@
 }
 
 .video-item.current .video-item-title {
-  color: #0056D2;
+  color: #4285F4;
 }
 
 .video-item-duration {

@@ -18,7 +18,7 @@
   width: 48px;
   height: 48px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #0056D2 0%, #00347E 100%);
+  background: linear-gradient(135deg, #4285F4 0%, #2C5AA0 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,12 +92,12 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #0056D2;
+  accent-color: #4285F4;
 }
 
 .module-radio.selected {
   background: #eff6ff;
-  color: #0056D2;
+  color: #4285F4;
   font-weight: 600;
 }
 
@@ -108,7 +108,7 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background: #0056D2;
+  background: #4285F4;
 }
 
 .module-radio span {
@@ -139,7 +139,7 @@
 
 .nav-link:hover {
   background: #f9fafb;
-  color: #0056D2;
+  color: #4285F4;
 }
 
 .nav-link svg {
@@ -148,12 +148,12 @@
 }
 
 .nav-link:hover svg {
-  color: #0056D2;
+  color: #4285F4;
 }
 
 .nav-badge {
   margin-left: auto;
-  background: #0056D2;
+  background: #4285F4;
   color: white;
   font-size: 12px;
   font-weight: 600;

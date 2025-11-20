@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { badges as courseBadges, courses } from '../../data/courses'
 
 const GameContext = createContext()
 
@@ -155,9 +156,10 @@ const SKILL_DEFINITIONS = {
 }
 
 const XP_PER_VIDEO = 50
-const XP_PER_MODULE = 200 // Mega XP for module completion
-const XP_PER_COURSE_COMPLETE = 500
+const XP_PER_MODULE = 100 // XP for module completion
+const XP_PER_COURSE_COMPLETE = 0 // No XP bonus - badges are given instead
 const LEVEL_UP_XP_MULTIPLIER = 200 // XP needed = level * 200
+const BADGES_PER_COURSE = 3 // 3 badges per course completion
 
 export const GameProvider = ({ children }) => {
   const [state, setState] = useState(() => {
@@ -171,18 +173,20 @@ export const GameProvider = ({ children }) => {
       }
     }
     
-    return {
-      totalXP: 1250,
-      level: 12,
+      return {
+      totalXP: 1000,
+      level: 1, // Will be recalculated from XP, but starting at 1
       courses: [],
       badges: [],
       skills: [],
-      currentStreak: 7,
+      currentStreak: 1,
       lastCompletionDate: new Date().toISOString(),
       totalVideosCompleted: 0,
       coursesCompleted: 0,
       notifications: [],
       notificationHistory: [], // Store all notifications for history panel
+      completedVideos: [], // Track completed videos to prevent duplicates (stored as array for JSON)
+      completedSkills: [], // Track completed skills from courses.js (stored as array for JSON)
       // Course modules and tasks tracking
       courseModules: {}, // { courseId: { modules: [...], taskStates: {...} } }
     }
@@ -233,16 +237,31 @@ export const GameProvider = ({ children }) => {
     return newStreak
   }, [state.currentStreak, state.lastCompletionDate])
 
-  // Add notification
+  // Add notification with duplicate prevention
   const addNotification = useCallback((type, data = {}) => {
-    const notification = {
-      id: Date.now() + Math.random(),
-      type,
-      data,
-      timestamp: new Date().toISOString(),
-    }
+    // Create a unique key for this notification to prevent duplicates
+    const notificationKey = `${type}_${JSON.stringify(data)}`
+    const notificationId = Date.now() + Math.random()
     
     setState(prev => {
+      // Check if this exact notification already exists in current notifications
+      const isDuplicate = prev.notifications.some(n => {
+        const nKey = `${n.type}_${JSON.stringify(n.data)}`
+        return nKey === notificationKey
+      })
+      
+      if (isDuplicate) {
+        return prev // Don't add duplicate
+      }
+      
+      const notification = {
+        id: notificationId,
+        type,
+        data,
+        timestamp: new Date().toISOString(),
+        key: notificationKey, // Store key for duplicate checking
+      }
+      
       // Add to current notifications
       const newNotifications = [...prev.notifications, notification]
       
@@ -261,10 +280,194 @@ export const GameProvider = ({ children }) => {
     setTimeout(() => {
       setState(prev => ({
         ...prev,
-        notifications: prev.notifications.filter(n => n.id !== notification.id),
+        notifications: prev.notifications.filter(n => n.id !== notificationId),
       }))
     }, 5000)
   }, [])
+
+  // Award quarter-course badge (at 25% completion)
+  const awardQuarterCourseBadge = useCallback((courseId) => {
+    setState(prev => {
+      const courseBadge = courseBadges[courseId]
+      if (!courseBadge || !courseBadge.quarterCourse) {
+        return prev
+      }
+      
+      const badgeId = courseBadge.quarterCourse.id
+      
+      // Skip if already unlocked
+      if (prev.badges.some(b => b.id === badgeId)) {
+        return prev
+      }
+      
+      const badge = {
+        id: badgeId,
+        title: courseBadge.quarterCourse.name,
+        icon: courseBadge.quarterCourse.icon,
+        description: courseBadge.quarterCourse.description,
+        unlockedAt: new Date().toISOString(),
+        courseId,
+        type: 'quarterCourse',
+      }
+      
+      setTimeout(() => {
+        addNotification('BADGE_UNLOCKED', badge)
+      }, 100)
+      
+      return {
+        ...prev,
+        badges: [...prev.badges, badge],
+      }
+    })
+  }, [addNotification])
+
+  // Award mid-course badge (at 50% completion)
+  const awardMidCourseBadge = useCallback((courseId) => {
+    setState(prev => {
+      const courseBadge = courseBadges[courseId]
+      if (!courseBadge || !courseBadge.midCourse) {
+        return prev
+      }
+      
+      const badgeId = courseBadge.midCourse.id
+      
+      // Skip if already unlocked
+      if (prev.badges.some(b => b.id === badgeId)) {
+        return prev
+      }
+      
+      const badge = {
+        id: badgeId,
+        title: courseBadge.midCourse.name,
+        icon: courseBadge.midCourse.icon,
+        description: courseBadge.midCourse.description,
+        unlockedAt: new Date().toISOString(),
+        courseId,
+        type: 'midCourse',
+      }
+      
+      setTimeout(() => {
+        addNotification('BADGE_UNLOCKED', badge)
+      }, 100)
+      
+      return {
+        ...prev,
+        badges: [...prev.badges, badge],
+      }
+    })
+  }, [addNotification])
+
+  // Award three-quarter-course badge (at 75% completion)
+  const awardThreeQuarterCourseBadge = useCallback((courseId) => {
+    setState(prev => {
+      const courseBadge = courseBadges[courseId]
+      if (!courseBadge || !courseBadge.threeQuarterCourse) {
+        return prev
+      }
+      
+      const badgeId = courseBadge.threeQuarterCourse.id
+      
+      // Skip if already unlocked
+      if (prev.badges.some(b => b.id === badgeId)) {
+        return prev
+      }
+      
+      const badge = {
+        id: badgeId,
+        title: courseBadge.threeQuarterCourse.name,
+        icon: courseBadge.threeQuarterCourse.icon,
+        description: courseBadge.threeQuarterCourse.description,
+        unlockedAt: new Date().toISOString(),
+        courseId,
+        type: 'threeQuarterCourse',
+      }
+      
+      setTimeout(() => {
+        addNotification('BADGE_UNLOCKED', badge)
+      }, 100)
+      
+      return {
+        ...prev,
+        badges: [...prev.badges, badge],
+      }
+    })
+  }, [addNotification])
+
+  // Award badges for course completion (end-course badges)
+  const awardCourseCompletionBadges = useCallback((courseId, courseNumber) => {
+    setState(prev => {
+      const newBadges = []
+      const baseBadgeIndex = (courseNumber - 1) * BADGES_PER_COURSE
+      
+      // Check if course has a badge definition in courses.js
+      const courseBadge = courseBadges[courseId]
+      
+      // Award end-course badge if defined
+      if (courseBadge && courseBadge.endCourse) {
+        const badgeId = courseBadge.endCourse.id
+        
+        // Skip if already unlocked
+        if (!prev.badges.some(b => b.id === badgeId)) {
+          const badge = {
+            id: badgeId,
+            title: courseBadge.endCourse.name,
+            icon: courseBadge.endCourse.icon,
+            description: courseBadge.endCourse.description,
+            unlockedAt: new Date().toISOString(),
+            courseId,
+            courseNumber,
+            type: 'endCourse',
+          }
+          newBadges.push(badge)
+          
+          setTimeout(() => {
+            addNotification('BADGE_UNLOCKED', badge)
+          }, 100)
+        }
+      }
+      
+      // Also create 2 additional badges for the 3 total badges per course
+      for (let i = 0; i < BADGES_PER_COURSE - 1; i++) {
+        const badgeIndex = baseBadgeIndex + i
+        const badgeId = courseBadge 
+          ? `${courseId}_badge_${i + 1}` 
+          : `COURSE_COMPLETION_${badgeIndex + 1}`
+        
+        // Skip if already unlocked
+        if (prev.badges.some(b => b.id === badgeId)) {
+          continue
+        }
+        
+        const badge = {
+          id: badgeId,
+          title: courseBadge 
+            ? `${courseBadge.name} ${i + 1 === 1 ? 'Badge' : `Badge ${i + 1}`}`
+            : `Course ${courseNumber} Completion Badge ${i + 1}`,
+          icon: courseBadge ? courseBadge.icon : (['🏆', '⭐', '🎖️'][i] || '🏅'),
+          description: courseBadge 
+            ? `${courseBadge.description} - Badge ${i + 1}`
+            : `Earned for completing course #${courseNumber}`,
+          unlockedAt: new Date().toISOString(),
+          courseId,
+          courseNumber,
+        }
+        newBadges.push(badge)
+        
+        // Notify badge unlock with delay to show them sequentially
+        setTimeout(() => {
+          addNotification('BADGE_UNLOCKED', badge)
+        }, 200 + (i * 300))
+      }
+
+      if (newBadges.length > 0) {
+        return {
+          ...prev,
+          badges: [...prev.badges, ...newBadges],
+        }
+      }
+      return prev
+    })
+  }, [addNotification])
 
   // Check for badge unlocks
   const checkBadges = useCallback((courseId = null, moduleId = null) => {
@@ -338,6 +541,17 @@ export const GameProvider = ({ children }) => {
   // Complete a video
   const completeVideo = useCallback((courseId, videoId, totalVideos = null) => {
     setState(prev => {
+      // Check if this video has already been completed to prevent duplicates
+      const videoKey = `${courseId}_${videoId}`
+      const completedVideosSet = new Set(prev.completedVideos || [])
+      
+      if (completedVideosSet.has(videoKey)) {
+        return prev // Video already completed, don't process again
+      }
+      
+      // Mark video as completed
+      completedVideosSet.add(videoKey)
+      
       const courses = [...prev.courses]
       const courseIndex = courses.findIndex(c => c.id === courseId)
       
@@ -360,15 +574,9 @@ export const GameProvider = ({ children }) => {
         if (!course.totalVideos) course.totalVideos = totalVideos || 28
         
         // Only increment if this video hasn't been completed yet
-        // Check if videoId is greater than last completed or if it's the next video
-        const shouldIncrement = !course.lastVideoCompleted || 
-          (videoId > course.lastVideoCompleted && videoId === course.videosCompleted + 1)
-        
-        if (shouldIncrement) {
-          course.videosCompleted = Math.min(course.videosCompleted + 1, course.totalVideos)
-          course.progress = Math.round((course.videosCompleted / course.totalVideos) * 100)
-          course.lastVideoCompleted = videoId
-        }
+        course.videosCompleted = Math.min(course.videosCompleted + 1, course.totalVideos)
+        course.progress = Math.round((course.videosCompleted / course.totalVideos) * 100)
+        course.lastVideoCompleted = videoId
         courses[courseIndex] = course
       }
 
@@ -415,6 +623,7 @@ export const GameProvider = ({ children }) => {
         lastCompletionDate: today,
         totalVideosCompleted: prev.totalVideosCompleted + 1,
         coursesCompleted: courseCompleted ? prev.coursesCompleted + 1 : prev.coursesCompleted,
+        completedVideos: Array.from(completedVideosSet), // Store as array for JSON serialization
       }
 
       // Check for streak achievement (every 21 days like Habitica)
@@ -444,13 +653,17 @@ export const GameProvider = ({ children }) => {
         }, 300)
       }
 
-      // Notify course completion
+      // Notify course completion and award badges
       if (courseCompleted) {
         setTimeout(() => {
           addNotification('COURSE_COMPLETED', {
             courseId,
-            xp: XP_PER_COURSE_COMPLETE,
+            badges: BADGES_PER_COURSE,
           })
+          
+          // Award badges for course completion (3 badges per course)
+          const courseNumber = prev.coursesCompleted + 1
+          awardCourseCompletionBadges(courseId, courseNumber)
         }, 500)
       }
 
@@ -462,7 +675,7 @@ export const GameProvider = ({ children }) => {
 
       return newState
     })
-  }, [calculateLevel, addNotification, checkBadges, checkSkills])
+  }, [calculateLevel, addNotification, checkBadges, checkSkills, awardCourseCompletionBadges])
 
   // Initialize courses from Dashboard
   const initializeCourses = useCallback((courses) => {
@@ -546,6 +759,22 @@ export const GameProvider = ({ children }) => {
       const isCourseComplete = updatedModules.every(m => m.completed)
       const wasCourseComplete = prev.courses.find(c => c.id === courseId)?.completed
       const courseJustCompleted = isCourseComplete && !wasCourseComplete
+      
+      // Calculate course progress for milestone badges
+      const totalModules = updatedModules.length
+      const completedModules = updatedModules.filter(m => m.completed).length
+      const courseProgress = totalModules > 0 ? completedModules / totalModules : 0
+      const prevProgress = prev.courseModules[courseId]?.progress || 0
+      
+      // Check milestone achievements
+      const wasPastQuarter = prevProgress >= 0.25
+      const isPastQuarter = courseProgress >= 0.25 && !wasPastQuarter
+      
+      const wasPastMidpoint = prevProgress >= 0.5
+      const isPastMidpoint = courseProgress >= 0.5 && !wasPastMidpoint
+      
+      const wasPastThreeQuarter = prevProgress >= 0.75
+      const isPastThreeQuarter = courseProgress >= 0.75 && !wasPastThreeQuarter
 
       // Calculate XP - add mega XP for module completion
       let newXP = prev.totalXP
@@ -566,10 +795,54 @@ export const GameProvider = ({ children }) => {
         return c
       })
 
+      // Auto-complete skills when tasks are completed (from courses.js)
+      const completedSkillsSet = new Set(prev.completedSkills || [])
+      
+      // Find the course in courses.js to get skill names
+      let courseData = null
+      let courseDomain = null
+      for (const domain of Object.keys(courses)) {
+        courseData = courses[domain].find(c => c.id === courseId)
+        if (courseData) {
+          courseDomain = domain
+          break
+        }
+      }
+      
+      // Mark skills from completed task as completed
+      // In courses.js: lessons have modules with id and skillName
+      // In component: modules have tasks with id
+      // Try to match taskId to module.id in courses.js
+      if (courseData && courseDomain && module) {
+        // Find the lesson that contains this module
+        courseData.lessons.forEach(lesson => {
+          // Check if this lesson matches the moduleId (lesson.id might match moduleId)
+          const lessonMatches = lesson.id === moduleId || lesson.id === `lesson-${moduleId}`
+          
+          if (lessonMatches) {
+            // Find the module item that matches the taskId
+            lesson.modules.forEach((moduleItem, index) => {
+              // Try multiple matching strategies
+              const matches = 
+                moduleItem.id === taskId ||
+                moduleItem.id === `module-${taskId}` ||
+                moduleItem.id === taskId.toString() ||
+                (module.tasks && module.tasks[index] && module.tasks[index].id === taskId)
+              
+              if (matches && moduleItem.skillName) {
+                const skillKey = `${courseDomain}:${moduleItem.skillName}`
+                completedSkillsSet.add(skillKey)
+              }
+            })
+          }
+        })
+      }
+
       const newState = {
         ...prev,
         totalXP: newXP,
         level: calculateLevel(newXP),
+        completedSkills: Array.from(completedSkillsSet),
         courseModules: {
           ...prev.courseModules,
           [courseId]: {
@@ -577,6 +850,7 @@ export const GameProvider = ({ children }) => {
             modules: updatedModules,
             taskStates: updatedTaskStates,
             lastUpdated: new Date().toISOString(),
+            progress: courseProgress,
           },
         },
         courses: updatedCourses,
@@ -597,13 +871,36 @@ export const GameProvider = ({ children }) => {
         }, 300)
       }
 
-      // Notify course completion
+      // Award milestone badges at different completion percentages
+      if (isPastQuarter) {
+        setTimeout(() => {
+          awardQuarterCourseBadge(courseId)
+        }, 350)
+      }
+      
+      if (isPastMidpoint) {
+        setTimeout(() => {
+          awardMidCourseBadge(courseId)
+        }, 400)
+      }
+      
+      if (isPastThreeQuarter) {
+        setTimeout(() => {
+          awardThreeQuarterCourseBadge(courseId)
+        }, 450)
+      }
+
+      // Notify course completion and award badges
       if (courseJustCompleted) {
+        const courseNumber = prev.coursesCompleted + 1
         setTimeout(() => {
           addNotification('COURSE_COMPLETED', {
             courseId,
-            xp: XP_PER_COURSE_COMPLETE,
+            badges: BADGES_PER_COURSE,
           })
+          
+          // Award badges for course completion (3 badges per course)
+          awardCourseCompletionBadges(courseId, courseNumber)
         }, 600)
       }
 
@@ -614,12 +911,29 @@ export const GameProvider = ({ children }) => {
 
       return newState
     })
-  }, [calculateLevel, addNotification, checkBadges])
+  }, [calculateLevel, addNotification, checkBadges, awardCourseCompletionBadges, awardQuarterCourseBadge, awardMidCourseBadge, awardThreeQuarterCourseBadge])
 
   // Get course modules data
   const getCourseModules = useCallback((courseId) => {
     return state.courseModules[courseId] || null
   }, [state.courseModules])
+
+  // Complete a skill (from SkillGraph)
+  const completeSkill = useCallback((skillKey) => {
+    setState(prev => {
+      const completedSkillsSet = new Set(prev.completedSkills || [])
+      if (completedSkillsSet.has(skillKey)) {
+        return prev // Already completed
+      }
+      
+      completedSkillsSet.add(skillKey)
+      
+      return {
+        ...prev,
+        completedSkills: Array.from(completedSkillsSet),
+      }
+    })
+  }, [])
 
   const value = {
     ...state,
@@ -631,6 +945,7 @@ export const GameProvider = ({ children }) => {
     addNotification,
     checkBadges,
     checkSkills,
+    completeSkill,
     levelProgress: state.totalXP % (state.level * LEVEL_UP_XP_MULTIPLIER),
     xpToNextLevel: state.level * LEVEL_UP_XP_MULTIPLIER,
   }

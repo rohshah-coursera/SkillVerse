@@ -51,7 +51,7 @@
 
 .set-plan-button {
   width: 100%;
-  background: #0056D2;
+  background: #4285F4;
   color: white;
   border: none;
   padding: 12px 20px;
@@ -63,7 +63,7 @@
 }
 
 .set-plan-button:hover {
-  background: #00347E;
+  background: #2C5AA0;
 }
 
 .plan-set-message {
@@ -117,7 +117,7 @@
 
 .timeline-value-link a {
   font-size: 14px;
-  color: #0056D2;
+  color: #4285F4;
   font-weight: 600;
   text-decoration: none;
 }

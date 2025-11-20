@@ -1,107 +1,148 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import CourseCard from './CourseCard'
 import GamifiedStats from './GamifiedStats'
 import AchievementBadge from './AchievementBadge'
 import SkillsPanel from './SkillsPanel'
 import VideoPlayer from './VideoPlayer'
-import SkillTree from './SkillTree'
+import SkillGraph from './SkillGraph'
+import StreakPopup from './StreakPopup'
+import StatPopup from './StatPopup'
 import { useGame } from '../context/GameContext'
+import { courses as coursesData, badges as courseBadgeDefinitions } from '../../data/courses'
 import { TreePine } from 'lucide-react'
+import { Zap, Trophy, Award } from 'lucide-react'
 import './Dashboard.css'
 
 const Dashboard = () => {
-  const { initializeCourses, badges, currentStreak, totalXP, level, levelProgress, xpToNextLevel, courses: savedCourses } = useGame()
+  const { initializeCourses, badges, currentStreak, totalXP, level, levelProgress, xpToNextLevel, courses: savedCourses, courseModules } = useGame()
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [showSkillTree, setShowSkillTree] = useState(false)
+  const [showStreakPopup, setShowStreakPopup] = useState(false)
+  const [showStatPopup, setShowStatPopup] = useState(null) // 'xp', 'level', 'badges', or null
   
-  // Get top 5 badges (sorted by unlock date, most recent first)
-  const topBadges = [...badges]
-    .sort((a, b) => new Date(b.unlockedAt || 0) - new Date(a.unlockedAt || 0))
-    .slice(0, 5)
+  // Sort badges by criticality/hardness
+  // Priority: Course completion badges > Mid-course badges > Generic badges
+  // Within each category, sort by rarity (streak badges > course badges > milestone badges)
+  const sortedBadges = useMemo(() => {
+    return [...badges].sort((a, b) => {
+      // Get badge definitions to determine type
+      const aIsEndCourse = a.id && (a.id.includes('-end') || Object.values(courseBadgeDefinitions).some(badge => badge.endCourse?.id === a.id))
+      const bIsEndCourse = b.id && (b.id.includes('-end') || Object.values(courseBadgeDefinitions).some(badge => badge.endCourse?.id === b.id))
+      const aIsMidCourse = a.id && (a.id.includes('-mid') || Object.values(courseBadgeDefinitions).some(badge => badge.midCourse?.id === a.id))
+      const bIsMidCourse = b.id && (b.id.includes('-mid') || Object.values(courseBadgeDefinitions).some(badge => badge.midCourse?.id === b.id))
+      
+      // Priority 1: End course badges (most critical)
+      if (aIsEndCourse && !bIsEndCourse) return -1
+      if (!aIsEndCourse && bIsEndCourse) return 1
+      
+      // Priority 2: Mid course badges
+      if (aIsMidCourse && !bIsMidCourse) return -1
+      if (!aIsMidCourse && bIsMidCourse) return 1
+      
+      // Priority 3: Streak badges (harder to achieve)
+      const aIsStreak = a.id && (a.id.includes('STREAK') || a.id.includes('streak'))
+      const bIsStreak = b.id && (b.id.includes('STREAK') || b.id.includes('streak'))
+      if (aIsStreak && !bIsStreak) return -1
+      if (!aIsStreak && bIsStreak) return 1
+      
+      // Priority 4: Course-related badges
+      const aIsCourse = a.courseId || a.id?.includes('COURSE')
+      const bIsCourse = b.courseId || b.id?.includes('COURSE')
+      if (aIsCourse && !bIsCourse) return -1
+      if (!aIsCourse && bIsCourse) return 1
+      
+      // Priority 5: Most recent first
+      return new Date(b.unlockedAt || 0) - new Date(a.unlockedAt || 0)
+    })
+  }, [badges])
 
-  // Base courses data
-  const baseCourses = [
-    {
-      id: 'demo-course',
-      title: 'Demo Course: Quick Start Guide',
-      instructor: 'LearnQuest Team',
-      progress: 0,
-      thumbnail: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400',
-      duration: '1 week',
-      videosCompleted: 0,
-      totalVideos: 4, // 2 modules × 2 videos
-      level: 'Beginner',
-      xp: 0,
-      streak: currentStreak,
-      isDemo: true,
-    },
-    {
-      id: 1,
-      title: 'Machine Learning Specialization',
-      instructor: 'Andrew Ng',
-      progress: 65,
-      thumbnail: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400',
-      duration: '12 weeks',
-      videosCompleted: 18,
-      totalVideos: 28,
-      level: 'Intermediate',
-      xp: 850,
-      streak: currentStreak,
-    },
-    {
-      id: 2,
-      title: 'Full Stack Web Development',
-      instructor: 'Colt Steele',
-      progress: 42,
-      thumbnail: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400',
-      duration: '8 weeks',
-      videosCompleted: 12,
-      totalVideos: 29,
-      level: 'Beginner',
-      xp: 520,
-      streak: currentStreak,
-    },
-    {
-      id: 3,
-      title: 'Data Science with Python',
-      instructor: 'Jose Portilla',
-      progress: 88,
-      thumbnail: 'https://images.unsplash.com/photo-1529107386315-e3a2d56bc433?w=400',
-      duration: '10 weeks',
-      videosCompleted: 25,
-      totalVideos: 28,
-      level: 'Advanced',
-      xp: 1200,
-      streak: currentStreak,
-    },
-    {
-      id: 4,
-      title: 'UI/UX Design Masterclass',
-      instructor: 'Sarah Johnson',
-      progress: 30,
-      thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400',
-      duration: '6 weeks',
-      videosCompleted: 8,
-      totalVideos: 26,
-      level: 'Beginner',
-      xp: 320,
-      streak: currentStreak,
-    },
-  ]
+  // Transform courses.js data to Dashboard format
+  const baseCourses = useMemo(() => {
+    const allCourses = []
+    
+    // Courses to exclude from MyCourses section
+    const excludedCourseIds = ['healthcare-basics', 'sales-mastery']
+    
+    // Iterate through all domains in courses.js
+    Object.keys(coursesData).forEach(domain => {
+      coursesData[domain].forEach(course => {
+        // Skip excluded courses
+        if (excludedCourseIds.includes(course.id)) {
+          return
+        }
+        // Calculate total videos/modules from lessons
+        let totalModules = 0
+        let totalVideos = 0
+        
+        course.lessons.forEach(lesson => {
+          totalModules += lesson.modules.length
+          // Estimate videos: assume 1-2 videos per module (use consistent calculation)
+          lesson.modules.forEach((module, idx) => {
+            // Use a deterministic calculation based on module index
+            totalVideos += (idx % 2 === 0 ? 2 : 1) // Alternate between 1 and 2 videos
+          })
+        })
+        
+        // Get saved course data if exists
+        const savedCourse = savedCourses.find(sc => sc.id === course.id)
+        const courseModuleData = courseModules[course.id]
+        
+        // Calculate progress from courseModules
+        let progress = 0
+        let videosCompleted = 0
+        
+        if (courseModuleData) {
+          const completedModules = courseModuleData.modules?.filter(m => m.completed).length || 0
+          const totalModulesCount = courseModuleData.modules?.length || totalModules
+          progress = totalModulesCount > 0 ? Math.round((completedModules / totalModulesCount) * 100) : 0
+          
+          // Count completed videos from taskStates
+          const taskStates = courseModuleData.taskStates || {}
+          videosCompleted = Object.values(taskStates).filter(completed => completed === true).length
+        } else if (savedCourse) {
+          progress = savedCourse.progress || 0
+          videosCompleted = savedCourse.videosCompleted || 0
+        }
+        
+        // Use image URL from courses.js, or fallback to default
+        const thumbnail = course.image || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=450&fit=crop'
+        
+        allCourses.push({
+          id: course.id,
+          title: course.title,
+          instructor: course.instructor,
+          progress,
+          thumbnail,
+          duration: course.duration,
+          videosCompleted,
+          totalVideos: savedCourse?.totalVideos || totalVideos || 10,
+          level: course.level,
+          xp: videosCompleted * 50, // 50 XP per video
+          domain,
+          description: course.description,
+        })
+      })
+    })
+    
+    return allCourses
+  }, [savedCourses, courseModules])
 
-  // Merge with saved course data
-  const courses = baseCourses.map(course => {
-    const savedCourse = savedCourses.find(sc => sc.id === course.id)
-    if (savedCourse) {
-      return {
-        ...course,
-        progress: savedCourse.progress || course.progress,
-        videosCompleted: savedCourse.videosCompleted || course.videosCompleted,
+  // Merge with saved course data for progress tracking
+  const courses = useMemo(() => {
+    return baseCourses.map(course => {
+      const savedCourse = savedCourses.find(sc => sc.id === course.id)
+      if (savedCourse) {
+        return {
+          ...course,
+          progress: savedCourse.progress || course.progress,
+          videosCompleted: savedCourse.videosCompleted || course.videosCompleted,
+          totalVideos: savedCourse.totalVideos || course.totalVideos,
+        }
       }
-    }
-    return course
-  })
+      return course
+    })
+  }, [baseCourses, savedCourses])
 
   // Initialize courses in game context
   useEffect(() => {
@@ -115,7 +156,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       {showSkillTree ? (
-        <SkillTree onBack={() => setShowSkillTree(false)} />
+        <SkillGraph onBack={() => setShowSkillTree(false)} />
       ) : selectedCourse ? (
         <VideoPlayer
           course={selectedCourse}
@@ -137,19 +178,21 @@ const Dashboard = () => {
             </div>
           </motion.div>
 
-          {/* Top 5 Badges */}
-          {topBadges.length > 0 && (
+          {/* All Badges - Scrollable */}
+          {sortedBadges.length > 0 && (
             <div className="dashboard-section">
               <div className="section-header">
                 <h2 className="section-title">Top Achievements</h2>
+                <span className="section-count">{sortedBadges.length} Badges</span>
               </div>
-              <div className="top-badges-grid">
-                {topBadges.map((badge, index) => (
+              <div className="top-badges-scrollable">
+                {sortedBadges.map((badge, index) => (
                   <motion.div
                     key={badge.id}
                     initial={{ opacity: 0, scale: 0.8, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="badge-item-wrapper"
                   >
                     <AchievementBadge 
                       achievement={{
@@ -173,6 +216,46 @@ const Dashboard = () => {
             levelProgress={Math.round((levelProgress / xpToNextLevel) * 100)}
             weeklyGoal={weeklyGoal}
             currentWeek={currentWeek}
+            onStatClick={(type) => {
+              if (type === 'streak') {
+                setShowStreakPopup(true)
+              } else {
+                setShowStatPopup(type)
+              }
+            }}
+          />
+
+          <StreakPopup
+            isOpen={showStreakPopup}
+            onClose={() => setShowStreakPopup(false)}
+            streak={currentStreak}
+          />
+
+          <StatPopup
+            isOpen={showStatPopup === 'xp'}
+            onClose={() => setShowStatPopup(null)}
+            type="xp"
+            value={totalXP}
+            label="Total XP"
+            icon={Zap}
+          />
+
+          <StatPopup
+            isOpen={showStatPopup === 'level'}
+            onClose={() => setShowStatPopup(null)}
+            type="level"
+            value={level}
+            label="Current Level"
+            icon={Trophy}
+          />
+
+          <StatPopup
+            isOpen={showStatPopup === 'badges'}
+            onClose={() => setShowStatPopup(null)}
+            type="badges"
+            value={badges.length}
+            label="Badges Earned"
+            icon={Award}
           />
 
           <SkillsPanel />

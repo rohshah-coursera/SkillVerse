@@ -24,7 +24,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #0056D2 0%, #00347E 100%);
+  background: linear-gradient(135deg, #4285F4 0%, #2C5AA0 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -32,11 +32,11 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 86, 210, 0.2);
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2);
 }
 
 .primary-button:hover {
-  box-shadow: 0 6px 16px rgba(0, 86, 210, 0.3);
+  box-shadow: 0 6px 16px rgba(66, 133, 244, 0.3);
   transform: translateY(-2px);
 }
 
@@ -65,14 +65,14 @@
 
 .section-link {
   font-size: 0.95rem;
-  color: #0056D2;
+  color: #4285F4;
   font-weight: 600;
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .section-link:hover {
-  color: #00347E;
+  color: #2C5AA0;
 }
 
 .courses-grid {
@@ -81,10 +81,35 @@
   gap: 1.5rem;
 }
 
-.top-badges-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+.top-badges-scrollable {
+  display: flex;
   gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: #E9ECEF transparent;
+}
+
+.top-badges-scrollable::-webkit-scrollbar {
+  height: 8px;
+}
+
+.top-badges-scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.top-badges-scrollable::-webkit-scrollbar-thumb {
+  background: #E9ECEF;
+  border-radius: 4px;
+}
+
+.top-badges-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #D1D5DB;
+}
+
+.badge-item-wrapper {
+  flex-shrink: 0;
+  min-width: 150px;
 }
 
 .achievements-grid {

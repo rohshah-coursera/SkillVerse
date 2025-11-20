@@ -1,0 +1,168 @@
+.skill-graph-container {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.skill-graph-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.skill-graph-header h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #2d2d2d;
+  margin: 0;
+}
+
+.domain-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.domain-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid #e0e0e0;
+  background: white;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.domain-btn:hover {
+  border-color: currentColor;
+}
+
+.domain-btn.active {
+  color: white;
+  border-color: transparent;
+}
+
+.skill-graph-legend {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.legend-node {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid;
+}
+
+.legend-node.discovered {
+  background: #0056d2;
+  border-color: #0056d2;
+}
+
+.legend-node.undiscovered {
+  background: #f5f5f5;
+  border-color: #e0e0e0;
+}
+
+.skill-graph-svg-container {
+  width: 100%;
+  height: 600px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fafafa;
+  position: relative;
+}
+
+.skill-graph-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  shape-rendering: geometricPrecision;
+  text-rendering: optimizeLegibility;
+}
+
+.graph-connection {
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.graph-connection.undiscovered {
+  stroke-dasharray: 5,5;
+}
+
+.skill-node-group {
+  transition: transform 0.2s ease;
+}
+
+.skill-node-group.discovered:hover {
+  transform: scale(1.1);
+}
+
+.skill-node-group.discovered:hover circle {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.skill-node-group.discovered circle.completed {
+  stroke-width: 4;
+  filter: drop-shadow(0 0 10px currentColor);
+}
+
+.skill-node-group circle {
+  transition: r 0.2s ease, filter 0.2s ease;
+}
+
+.skill-name-text {
+  pointer-events: none;
+  user-select: none;
+}
+
+.skill-level-text {
+  pointer-events: none;
+  user-select: none;
+}
+
+.skill-hidden-text {
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .skill-graph-container {
+    padding: 1rem;
+  }
+
+  .skill-graph-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .skill-graph-svg-container {
+    height: 400px;
+  }
+
+  .skill-graph-legend {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+

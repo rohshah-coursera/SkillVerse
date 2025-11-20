@@ -20,9 +20,9 @@ const AchievementBadge = ({ achievement }) => {
             className="achievement-glow"
             animate={{
               boxShadow: [
-                '0 0 20px rgba(0, 86, 210, 0.3)',
-                '0 0 30px rgba(0, 86, 210, 0.5)',
-                '0 0 20px rgba(0, 86, 210, 0.3)',
+                '0 0 20px rgba(66, 133, 244, 0.3)',
+                '0 0 30px rgba(66, 133, 244, 0.5)',
+                '0 0 20px rgba(66, 133, 244, 0.3)',
               ],
             }}
             transition={{
